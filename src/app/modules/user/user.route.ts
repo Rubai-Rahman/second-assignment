@@ -5,4 +5,4 @@ const router = express.Router();
 //will control function
 router.post('/create-user', UserController.createUser);
 
-export const userRoutes = router;
+export const UserRoutes = router;
