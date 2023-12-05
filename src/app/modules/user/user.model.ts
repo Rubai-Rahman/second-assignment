@@ -118,7 +118,7 @@ userSchema.pre('aggregate', function (next) {
   next();
 });
 //custom instance
-userSchema.methods.isUserExists = async function (userId: number) {
+userSchema.methods.isUserExists = async function (userId) {
   const existingUser = await User.findOne({ userId });
 
   return existingUser;

@@ -22,25 +22,39 @@ const getAllUserFromDB = async () => {
 };
 
 //Get single user
-const getSingleUserFromDB = async (userId: string) => {
+const getSingleUserFromDB = async (userId: number) => {
+  const user = new User();
+  if (!(await user.isUserExists(userId))) {
+    throw new Error('User Does not exists');
+  }
   const result = await User.findOne({ userId });
   return result;
 };
 // update user
-const updateSingleUserInDB = async (userId: string, updatedData: TUser) => {
-  const result = await User.findOneAndUpdate({ userId }, updatedData, {
-    new: true,
-  });
+const updateSingleUserInDB = async (userId: number, updatedData: TUser) => {
+  const user = new User();
+  if (!(await user.isUserExists(userId))) {
+    throw new Error('User Does not exists');
+  }
+  const result = await User.updateOne({ userId }, updatedData);
 
   return result;
 };
 //delete user
-const deleteSingleUserInDB = async (userId: string) => {
+const deleteSingleUserInDB = async (userId: number) => {
+  const user = new User();
+  if (!(await user.isUserExists(userId))) {
+    throw new Error('User Does not exists');
+  }
   const result = await User.updateOne({ userId }, { isDeleted: true });
 
   return result;
 };
-const getSingleUserOrdersFromDb = async (userId: string) => {
+const getSingleUserOrdersFromDb = async (userId: number) => {
+  const user = new User();
+  if (!(await user.isUserExists(userId))) {
+    throw new Error('User Does not exists');
+  }
   const result = await User.find({ userId });
 
   return result;

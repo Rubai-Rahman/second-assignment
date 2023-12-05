@@ -11,7 +11,6 @@ const createUser = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: 'User created successfully!',
-
       data: result,
     });
   } catch (err: any) {
@@ -41,7 +40,7 @@ const getAllUser = async (req: Request, res: Response) => {
 };
 //Get User by id
 const getSingleUser = async (req: Request, res: Response) => {
-  const userId = req.params.userId;
+  const userId = parseInt(req.params.userId, 10);
   try {
     const result = await UserService.getSingleUserFromDB(userId);
     res.status(200).json({
@@ -49,17 +48,17 @@ const getSingleUser = async (req: Request, res: Response) => {
       message: 'User fetched successfully!',
       data: result,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({
       success: true,
-      message: 'Somthing went wrong',
+      message: err.message || 'Somthing went wrong',
       error: err,
     });
   }
 };
 //update User by id
 const updateSingleUser = async (req: Request, res: Response) => {
-  const userId = req.params.userId;
+  const userId = parseInt(req.params.userId, 10);
   const { updatedData } = req.body;
   try {
     const result = await UserService.updateSingleUserInDB(userId, updatedData);
@@ -78,7 +77,7 @@ const updateSingleUser = async (req: Request, res: Response) => {
 };
 //deleteUser
 const deleteSingleUser = async (req: Request, res: Response) => {
-  const userId = req.params.userId;
+  const userId = parseInt(req.params.userId, 10);
 
   try {
     const result = await UserService.deleteSingleUserInDB(userId);
@@ -97,7 +96,7 @@ const deleteSingleUser = async (req: Request, res: Response) => {
 };
 //getAlldataforuser
 const getSingleUserOrders = async (req: Request, res: Response) => {
-  const userId = req.params.userId;
+  const userId = parseInt(req.params.userId, 10);
   try {
     const result = await UserService.getSingleUserOrdersFromDb(userId);
     res.status(200).json({
