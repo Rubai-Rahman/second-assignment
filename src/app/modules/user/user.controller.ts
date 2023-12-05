@@ -67,10 +67,10 @@ const updateSingleUser = async (req: Request, res: Response) => {
       message: 'User updated successfully!',
       data: result,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({
       success: true,
-      message: 'Somthing went wrong',
+      message: err.message || 'Somthing went wrong',
       error: err,
     });
   }
@@ -86,10 +86,10 @@ const deleteSingleUser = async (req: Request, res: Response) => {
       message: 'User deleted successfully!',
       data: result,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({
       success: true,
-      message: 'Somthing went wrong',
+      message: err.message || 'Somthing went wrong',
       error: err,
     });
   }
@@ -104,10 +104,10 @@ const getSingleUserOrders = async (req: Request, res: Response) => {
       message: 'Orders fetched successfully!',
       data: result,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({
       success: true,
-      message: 'Somthing went wrong',
+      message: err.message || 'Somthing went wrong',
       error: err,
     });
   }
