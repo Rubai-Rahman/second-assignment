@@ -100,6 +100,7 @@ userSchema.pre('save', async function (next) {
 });
 //post hook
 userSchema.post('save', function (doc, next) {
+  
   doc.password = '';
   next();
 });

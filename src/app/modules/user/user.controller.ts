@@ -11,6 +11,7 @@ const createUser = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: 'User created successfully!',
+
       data: result,
     });
   } catch (err: any) {
@@ -94,6 +95,24 @@ const deleteSingleUser = async (req: Request, res: Response) => {
     });
   }
 };
+//getAlldataforuser
+const getSingleUserOrders = async (req: Request, res: Response) => {
+  const userId = req.params.userId;
+  try {
+    const result = await UserService.getSingleUserOrdersFromDb(userId);
+    res.status(200).json({
+      success: true,
+      message: 'Orders fetched successfully!',
+      data: result,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: true,
+      message: 'Somthing went wrong',
+      error: err,
+    });
+  }
+};
 
 export const UserController = {
   createUser,
@@ -101,4 +120,5 @@ export const UserController = {
   getSingleUser,
   updateSingleUser,
   deleteSingleUser,
+  getSingleUserOrders,
 };
