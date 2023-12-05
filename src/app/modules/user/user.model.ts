@@ -1,6 +1,6 @@
 // mongoose-schema.ts
 import { Schema, model } from 'mongoose';
-import { TUserName, TAddress, TUser } from './user.interface';
+import { TUserName, TAddress, TUser, TOrders } from './user.interface';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -28,20 +28,20 @@ const addressSchema = new Schema<TAddress>({
   },
 });
 
-// const ordersSchema = new Schema<TOrders>({
-//   productName: {
-//     type: String,
-//     required: [true, 'productName is required'],
-//   },
-//   price: {
-//     type: Number,
-//     required: [true, 'price is required'],
-//   },
-//   quantity: {
-//     type: Number,
-//     required: [true, 'quantity is required'],
-//   },
-// });
+const orderSchema = new Schema<TOrders>({
+  productName: {
+    type: String,
+    required: [true, 'productName is required'],
+  },
+  price: {
+    type: Number,
+    required: [true, 'price is required'],
+  },
+  quantity: {
+    type: Number,
+    required: [true, 'quantity is required'],
+  },
+});
 
 const userSchema = new Schema<TUser>({
   userId: {
@@ -71,6 +71,7 @@ const userSchema = new Schema<TUser>({
   },
   hobbies: [{ type: String, required: 'hobbies is required' }],
   address: addressSchema,
+  orders: { type: [orderSchema], required: true },
 });
 
 export const UserModel = model<TUser>('User', userSchema);
