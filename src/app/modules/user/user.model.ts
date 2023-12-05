@@ -81,6 +81,7 @@ const userSchema = new Schema<TUser, UserModel, UserMethods>({
   hobbies: [{ type: String, required: 'hobbies is required' }],
   address: addressSchema,
   orders: { type: [orderSchema], required: true },
+  isDeleted: { type: 'Boolean', default: false },
 });
 //middleware
 //pre hook
@@ -95,6 +96,23 @@ userSchema.pre('save', async function (next) {
   next();
 });
 //post hook
+userSchema.post('save', function (doc, next) {
+  doc.password = '';
+  next();
+});
+//post hook for document
+userSchema.post('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+userSchema.post('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+userSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
 //custom instance
 userSchema.methods.isUserExists = async function (userId: number) {
   const existingUser = await User.findOne({ userId });

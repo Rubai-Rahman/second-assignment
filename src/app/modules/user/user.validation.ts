@@ -30,4 +30,5 @@ export const userValidationSchema = z.object({
   hobbies: z.array(z.string().min(1, { message: 'Hobby must not be empty' })),
   address: addressValidationSchema,
   orders: z.array(ordersValidationSchema),
+  isDeleted: z.boolean(),
 });

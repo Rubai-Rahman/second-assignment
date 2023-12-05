@@ -26,10 +26,12 @@ export type TUser = {
   hobbies: string[];
   address: TAddress;
   orders: TOrders[];
+  isDeleted: boolean;
 };
 
 //custom instance
 export type UserMethods = {
+  // eslint-disable-next-line no-unused-vars
   isUserExists(userId: number): Promise<TUser | null>;
 };
 
