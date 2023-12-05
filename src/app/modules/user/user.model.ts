@@ -1,6 +1,15 @@
 // mongoose-schema.ts
 import { Schema, model } from 'mongoose';
-import { TUserName, TAddress, TUser, TOrders } from './user.interface';
+import {
+  TUserName,
+  TAddress,
+  TUser,
+  TOrders,
+  UserModel,
+  UserMethods,
+} from './user.interface';
+import bcrypt from 'bcrypt';
+import config from '../../config';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -43,7 +52,7 @@ const orderSchema = new Schema<TOrders>({
   },
 });
 
-const userSchema = new Schema<TUser>({
+const userSchema = new Schema<TUser, UserModel, UserMethods>({
   userId: {
     type: Number,
     required: [true, 'street is required'],
@@ -73,5 +82,23 @@ const userSchema = new Schema<TUser>({
   address: addressSchema,
   orders: { type: [orderSchema], required: true },
 });
+//middleware
+//pre hook
+userSchema.pre('save', async function (next) {
+  //hassing passworld and save in to db
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bycrpt_salt_round),
+  );
+  next();
+});
+//post hook
+//custom instance
+userSchema.methods.isUserExists = async function (userId: number) {
+  const existingUser = await User.findOne({ userId });
 
-export const UserModel = model<TUser>('User', userSchema);
+  return existingUser;
+};
+export const User = model<TUser, UserModel>('User', userSchema);

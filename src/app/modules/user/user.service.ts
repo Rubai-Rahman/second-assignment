@@ -1,14 +1,21 @@
 import { TUser } from './user.interface';
-import { UserModel } from './user.model';
+import { User } from './user.model';
 
 //createUser service
-const createUserIntoDB = async (user: TUser) => {
-  const result = await UserModel.create(user);
+const createUserIntoDB = async (userData: TUser) => {
+  //create an custom instance
+  const user = new User(userData);
+  if (await user.isUserExists(userData.userId)) {
+    throw new Error('User already exists');
+  }
+
+  // const result = await User.create(userData);//built in static method
+  const result = await user.save();
   return result;
 };
 //Get all user service
 const getAllUserFromDB = async () => {
-  const result = await UserModel.find()
+  const result = await User.find()
     .select('username fullName age email address -_id')
     .exec();
   return result;
@@ -16,16 +23,14 @@ const getAllUserFromDB = async () => {
 
 //Get single user
 const getSingleUserFromDB = async (userId: string) => {
-  const result = await UserModel.findOne({ userId });
+  const result = await User.findOne({ userId });
   return result;
 };
 // update user
-const updateSingleUserInDB = async (userId: string, updatedData) => {
-  const result = await UserModel.findOneAndUpdate(
-    { userId },
-    updatedData,
-    { new: true },
-  );
+const updateSingleUserInDB = async (userId: string, updatedData: TUser) => {
+  const result = await User.findOneAndUpdate({ userId }, updatedData, {
+    new: true,
+  });
 
   return result;
 };
