@@ -34,10 +34,16 @@ const updateSingleUserInDB = async (userId: string, updatedData: TUser) => {
 
   return result;
 };
+const deleteSingleUserInDB = async (userId: string) => {
+  const result = await User.updateOne({ userId }, { isDeleted: true });
+
+  return result;
+};
 
 export const UserService = {
   createUserIntoDB,
   getAllUserFromDB,
   getSingleUserFromDB,
   updateSingleUserInDB,
+  deleteSingleUserInDB,
 };

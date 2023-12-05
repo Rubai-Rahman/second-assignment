@@ -10,7 +10,7 @@ const createUser = async (req: Request, res: Response) => {
     const result = await UserService.createUserIntoDB(zodparseData);
     res.status(200).json({
       success: true,
-      message: 'User created Successfully',
+      message: 'User created successfully!',
       data: result,
     });
   } catch (err: any) {
@@ -27,7 +27,7 @@ const getAllUser = async (req: Request, res: Response) => {
     const result = await UserService.getAllUserFromDB();
     res.status(200).json({
       success: true,
-      message: 'Data retrive sucessfully',
+      message: 'Users fetched successfully!',
       data: result,
     });
   } catch (err) {
@@ -45,7 +45,7 @@ const getSingleUser = async (req: Request, res: Response) => {
     const result = await UserService.getSingleUserFromDB(userId);
     res.status(200).json({
       success: true,
-      message: 'Data retrive sucessfully',
+      message: 'User fetched successfully!',
       data: result,
     });
   } catch (err) {
@@ -64,7 +64,26 @@ const updateSingleUser = async (req: Request, res: Response) => {
     const result = await UserService.updateSingleUserInDB(userId, updatedData);
     res.status(200).json({
       success: true,
-      message: 'Data retrive sucessfully',
+      message: 'User updated successfully!',
+      data: result,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: true,
+      message: 'Somthing went wrong',
+      error: err,
+    });
+  }
+};
+//deleteUser
+const deleteSingleUser = async (req: Request, res: Response) => {
+  const userId = req.params.userId;
+
+  try {
+    const result = await UserService.deleteSingleUserInDB(userId);
+    res.status(200).json({
+      success: true,
+      message: 'User deleted successfully!',
       data: result,
     });
   } catch (err) {
@@ -81,4 +100,5 @@ export const UserController = {
   getAllUser,
   getSingleUser,
   updateSingleUser,
+  deleteSingleUser,
 };

@@ -56,10 +56,12 @@ const userSchema = new Schema<TUser, UserModel, UserMethods>({
   userId: {
     type: Number,
     required: [true, 'street is required'],
+    unique: true,
   },
   username: {
     type: String,
     required: [true, 'street is required'],
+    unique: true,
   },
   password: {
     type: String,
@@ -73,6 +75,7 @@ const userSchema = new Schema<TUser, UserModel, UserMethods>({
   email: {
     type: String,
     required: [true, 'street is required'],
+    unique: true,
   },
   isActive: {
     type: Boolean,
@@ -101,11 +104,11 @@ userSchema.post('save', function (doc, next) {
   next();
 });
 //post hook for document
-userSchema.post('find', function (next) {
+userSchema.pre('find', function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();
 });
-userSchema.post('findOne', function (next) {
+userSchema.pre('findOne', function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();
 });
