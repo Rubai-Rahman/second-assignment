@@ -88,20 +88,21 @@ const userSchema = new Schema<TUser, UserModel, UserMethods>({
 });
 //middleware
 //pre hook
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function (next): Promise<void> {
   //hassing passworld and save in to db
   // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
+  const user: TUser = this;
+  user.password = (await bcrypt.hash(
+    user.password as string,
     Number(config.bycrpt_salt_round),
-  );
+  )) as string;
+
   next();
 });
 //post hook
 userSchema.post('save', function (doc, next) {
-  
-  doc.password = '';
+  doc.password = undefined;
+
   next();
 });
 //post hook for document
