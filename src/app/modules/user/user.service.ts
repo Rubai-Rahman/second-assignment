@@ -27,7 +27,13 @@ const getSingleUserFromDB = async (userId: number) => {
   if (!(await user.isUserExists(userId))) {
     throw new Error('User Does not exists');
   }
-  const result = await User.findOne({ userId });
+  const result = await User.aggregate([
+    {
+      $match: {
+        userId: userId,
+      },
+    },
+  ]);
   return result;
 };
 // update user

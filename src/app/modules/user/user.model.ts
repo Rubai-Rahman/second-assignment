@@ -102,10 +102,24 @@ userSchema.pre('save', async function (next): Promise<void> {
 //post hook
 userSchema.post('save', function (doc, next) {
   doc.password = undefined;
+  next();
+});
+//pre hook for document
+userSchema.post('find', function (doc, next) {
+  doc.password = undefined;
+  next();
+});
+userSchema.post('aggregate', function (docs, next) {
+  docs.forEach((doc) => {
+    if (doc) {
+      doc.password = undefined;
+    }
+  });
 
   next();
 });
-//post hook for document
+
+//pre hook for document
 userSchema.pre('find', function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();
