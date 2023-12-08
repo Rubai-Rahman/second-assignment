@@ -2,14 +2,14 @@ import { TUser } from './user.interface';
 import { User } from './user.model';
 
 //createUser service
+
+//create user
 const createUserIntoDB = async (userData: TUser) => {
   //create an custom instance
   const user = new User(userData);
   if (await user.isUserExists(userData.userId)) {
     throw new Error('User already exists');
   }
-
-  // const result = await User.create(userData);//built in static method
   const result = await user.save();
   return result;
 };
@@ -57,6 +57,7 @@ const deleteSingleUserInDB = async (userId: number) => {
 
   return result;
 };
+//get Single user Orders
 const getSingleUserOrdersFromDb = async (userId: number) => {
   const user = new User();
   if (!(await user.isUserExists(userId))) {

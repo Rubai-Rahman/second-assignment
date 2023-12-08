@@ -66,6 +66,7 @@ const userSchema = new Schema<TUser, UserModel, UserMethods>({
   password: {
     type: String,
     required: [true, 'street is required'],
+    default: undefined,
   },
   fullName: userNameSchema,
   age: {
@@ -88,7 +89,7 @@ const userSchema = new Schema<TUser, UserModel, UserMethods>({
 });
 //middleware
 //pre hook
-userSchema.pre('save', async function (next): Promise<void> {
+userSchema.pre('save', async function (next) {
   //hassing passworld and save in to db
   // eslint-disable-next-line @typescript-eslint/no-this-alias
   const user: TUser = this;
@@ -104,11 +105,7 @@ userSchema.post('save', function (doc, next) {
   doc.password = undefined;
   next();
 });
-//pre hook for document
-userSchema.post('find', function (doc, next) {
-  doc.password = undefined;
-  next();
-});
+//aggregate
 userSchema.post('aggregate', function (docs, next) {
   docs.forEach((doc) => {
     if (doc) {
@@ -118,8 +115,20 @@ userSchema.post('aggregate', function (docs, next) {
 
   next();
 });
+//find
+userSchema.post('find', function (docs, next) {
+  if (Array.isArray(docs)) {
+    // Iterate through the found documents and set password to undefined
+    docs.forEach((doc) => {
+      if (doc) {
+        doc.password = undefined;
+      }
+    });
+  }
 
-//pre hook for document
+  next();
+});
+//pree hook
 userSchema.pre('find', function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();
