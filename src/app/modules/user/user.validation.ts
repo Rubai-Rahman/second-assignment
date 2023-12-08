@@ -22,8 +22,7 @@ export const userValidationSchema = z.object({
   username: z.string().min(1, { message: 'Username must not be empty' }),
   password: z
     .string()
-    .min(8, { message: 'Password must be at least 8 characters long' })
-    .nullable(),
+    .min(8, { message: 'Password must be at least 8 characters long' }),
   fullName: userNameValidationSchema,
   age: z.number().min(1, { message: 'Age must be at least 1' }),
   email: z.string().email({ message: 'Invalid email address' }),

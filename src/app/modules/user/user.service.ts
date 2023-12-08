@@ -40,13 +40,36 @@ const getSingleUserFromDB = async (userId: number) => {
 const updateSingleUserInDB = async (userId: number, updatedData: TUser) => {
   const user = new User();
   if (!(await user.isUserExists(userId))) {
-    throw new Error('User Does not exists');
+    throw new Error('User does not exist');
   }
-  const result = await User.findOneAndUpdate({ userId }, updatedData, {
-    new: true,
-  });
-  return result;
+  const result = await User.aggregate([
+    {
+      $match: { userId: userId },
+    },
+    {
+      $set: updatedData,
+    },
+    {
+      $project: {
+        _id: 0,
+        userId: 1,
+        usernam: 1,
+        age: 1,
+        email: 1,
+        isActive: 1,
+        hobbies: 1,
+        address: 1,
+      },
+    },
+  ]);
+
+  if (result.length === 0) {
+    throw new Error('User not found');
+  }
+
+  return result[0];
 };
+
 //delete user
 const deleteSingleUserInDB = async (userId: number) => {
   const user = new User();
