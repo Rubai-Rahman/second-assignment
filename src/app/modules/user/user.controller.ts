@@ -95,11 +95,34 @@ const deleteSingleUser = async (req: Request, res: Response) => {
     });
   }
 };
-//getAlldataforuser
+//getAlldataforSingleuser
 const getSingleUserOrders = async (req: Request, res: Response) => {
   const userId = parseInt(req.params.userId, 10);
   try {
     const result = await UserService.getSingleUserOrdersFromDb(userId);
+    res.status(200).json({
+      success: true,
+      message: 'Orders fetched successfully!',
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: true,
+      message: err.message || 'Somthing went wrong',
+      error: err,
+    });
+  }
+};
+const setSingleUserOrders = async (req: Request, res: Response) => {
+  const userId = parseInt(req.params.userId, 10);
+
+  const productData = req.body;
+
+  try {
+    const result = await UserService.setSingleUserOrdersFromDb(
+      userId,
+      productData,
+    );
     res.status(200).json({
       success: true,
       message: 'Orders fetched successfully!',
@@ -121,4 +144,5 @@ export const UserController = {
   updateSingleUser,
   deleteSingleUser,
   getSingleUserOrders,
+  setSingleUserOrders,
 };
