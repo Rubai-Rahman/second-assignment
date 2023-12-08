@@ -113,6 +113,7 @@ const getSingleUserOrders = async (req: Request, res: Response) => {
     });
   }
 };
+//getSingleUserOrders
 const setSingleUserOrders = async (req: Request, res: Response) => {
   const userId = parseInt(req.params.userId, 10);
 
@@ -136,7 +137,26 @@ const setSingleUserOrders = async (req: Request, res: Response) => {
     });
   }
 };
+//calculateTotal
+const calculateTotalPriceForUser = async (req: Request, res: Response) => {
+  const userId = parseInt(req.params.userId, 10);
 
+  try {
+    const result = await UserService.calculateTotalPriceForUser(userId);
+
+    res.status(200).json({
+      success: true,
+      message: 'Total price calculated successfully!',
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || 'Something went wrong',
+      error: err,
+    });
+  }
+};
 export const UserController = {
   createUser,
   getAllUser,
@@ -145,4 +165,5 @@ export const UserController = {
   deleteSingleUser,
   getSingleUserOrders,
   setSingleUserOrders,
+  calculateTotalPriceForUser,
 };

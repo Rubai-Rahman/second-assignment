@@ -115,6 +115,33 @@ const setSingleUserOrdersFromDb = async (
 
   return result;
 };
+//calculateTotalPrice
+const calculateTotalPriceForUser = async (userId: number) => {
+  const user = new User();
+  if (!(await user.isUserExists(userId))) {
+    throw new Error('User Does not exists');
+  }
+  const result = await User.aggregate([
+    { $match: { userId } },
+    {
+      $project: {
+        _id: 0,
+        userId: 1,
+        totalPrice: {
+          $sum: {
+            $map: {
+              input: '$orders',
+              as: 'order',
+              in: { $multiply: ['$$order.price', '$$order.quantity'] },
+            },
+          },
+        },
+      },
+    },
+  ]);
+
+  return result;
+};
 export const UserService = {
   createUserIntoDB,
   getAllUserFromDB,
@@ -123,4 +150,5 @@ export const UserService = {
   deleteSingleUserInDB,
   getSingleUserOrdersFromDb,
   setSingleUserOrdersFromDb,
+  calculateTotalPriceForUser,
 };

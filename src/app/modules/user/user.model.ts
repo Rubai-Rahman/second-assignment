@@ -85,8 +85,9 @@ const userSchema = new Schema<TUser, UserModel, UserMethods>({
   hobbies: [{ type: String, required: 'hobbies is required' }],
   address: addressSchema,
   orders: { type: [orderSchema], required: true },
-  isDeleted: { type: 'Boolean', default: false },
+  isDeleted: { type: 'boolean', default: false },
 });
+
 //middleware
 //pre hook
 userSchema.pre('save', async function (next) {
@@ -99,7 +100,8 @@ userSchema.pre('save', async function (next) {
   )) as string;
 
   next();
-});
+}
+);
 //post hook
 userSchema.post('save', function (doc, next) {
   doc.password = undefined;
