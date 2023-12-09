@@ -32,7 +32,7 @@ export type TUser = {
 //custom instance
 export type UserMethods = {
   isUserExists(userId: number): Promise<TUser | null>;
-  isUserExists(username: string, email: string): Promise<TUser | null>;
+  isEmailUserNameExists(username: string, email: string): Promise<TUser | null>;
 };
 
 export type UserModel = Model<TUser, Record<string, never>, UserMethods>;

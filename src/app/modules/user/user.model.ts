@@ -152,11 +152,10 @@ userSchema.pre('aggregate', function (next) {
 //custom instance for UserId
 userSchema.methods.isUserExists = async function (userId) {
   const existingUser = await User.findOne({ userId });
-
   return existingUser;
 };
 //custom instance email and username
-userSchema.methods.isUserExists = async function (
+userSchema.methods.isEmailUserNameExists = async function (
   username: string,
   email: string,
 ): Promise<TUser | null> {

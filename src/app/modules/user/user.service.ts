@@ -9,7 +9,7 @@ const createUserIntoDB = async (userData: TUser) => {
     throw new Error('User already exists');
   }
   //custom instance to check email and username
-  const existingUser = await user.isUserExists(
+  const existingUser = await user.isEmailUserNameExists(
     userData.username,
     userData.email,
   );
@@ -34,10 +34,10 @@ const getAllUserFromDB = async () => {
 
 //Get single user
 const getSingleUserFromDB = async (userId: number) => {
-  const user = new User();
-  if (!(await user.isUserExists(userId))) {
-    throw new Error('User Does not exists');
-  }
+  //const user = new User();
+  // if (!(await user.isUserExists(userId))) {
+  //   throw new Error('User Does not exists');
+  // }
   const result = await User.aggregate([
     {
       $match: {
@@ -53,7 +53,7 @@ const updateSingleUserInDB = async (userId: number, updatedData: TUser) => {
   if (!(await user.isUserExists(userId))) {
     throw new Error('User does not exist');
   }
-  
+
   const result = await User.aggregate([
     {
       $match: { userId: userId },
