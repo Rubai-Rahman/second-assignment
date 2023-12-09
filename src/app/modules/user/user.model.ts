@@ -149,10 +149,20 @@ userSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
 });
-//custom instance
+//custom instance for UserId
 userSchema.methods.isUserExists = async function (userId) {
   const existingUser = await User.findOne({ userId });
 
   return existingUser;
 };
+//custom instance email and username
+userSchema.methods.isUserExists = async function (
+  username: string,
+  email: string,
+): Promise<TUser | null> {
+  const filter = { $or: [{ username }, { email }] };
+  const existingUser = await this.model('User').findOne(filter);
+  return existingUser as TUser | null;
+};
+
 export const User = model<TUser, UserModel>('User', userSchema);

@@ -1,14 +1,25 @@
 import { TOrders, TUser } from './user.interface';
 import { User } from './user.model';
-
 //createUser service
-
 //create user
 const createUserIntoDB = async (userData: TUser) => {
   //create an custom instance
   const user = new User(userData);
   if (await user.isUserExists(userData.userId)) {
     throw new Error('User already exists');
+  }
+  //custom instance to check email and username
+  const existingUser = await user.isUserExists(
+    userData.username,
+    userData.email,
+  );
+  if (existingUser) {
+    if (existingUser.username === userData.username) {
+      throw new Error('Username already exists');
+    }
+    if (existingUser.email === userData.email) {
+      throw new Error('Email already exists');
+    }
   }
   const result = await user.save();
   return result;
@@ -42,6 +53,7 @@ const updateSingleUserInDB = async (userId: number, updatedData: TUser) => {
   if (!(await user.isUserExists(userId))) {
     throw new Error('User does not exist');
   }
+  
   const result = await User.aggregate([
     {
       $match: { userId: userId },
