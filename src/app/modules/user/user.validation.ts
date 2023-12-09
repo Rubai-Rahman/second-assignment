@@ -11,7 +11,7 @@ const addressValidationSchema = z.object({
   country: z.string().min(1, { message: 'Country must not be empty' }),
 });
 
-const ordersValidationSchema = z.object({
+export const ordersValidationSchema = z.object({
   productName: z.string().min(1, { message: 'Product name must not be empty' }),
   price: z.number().min(0.01, { message: 'Price must be greater than 0' }),
   quantity: z.number().int().min(1, { message: 'Quantity must be at least 1' }),

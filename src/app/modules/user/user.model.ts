@@ -55,37 +55,37 @@ const orderSchema = new Schema<TOrders>({
 const userSchema = new Schema<TUser, UserModel, UserMethods>({
   userId: {
     type: Number,
-    required: [true, 'street is required'],
+    required: [true, 'User Id is required'],
     unique: true,
   },
   username: {
     type: String,
-    required: [true, 'street is required'],
+    required: [true, 'username is required'],
     unique: true,
   },
   password: {
     type: String,
-    required: [true, 'street is required'],
+    required: [true, 'password is required'],
     default: undefined,
   },
   fullName: userNameSchema,
   age: {
     type: Number,
-    required: [true, 'street is required'],
+    required: [true, 'Name is required'],
   },
   email: {
     type: String,
-    required: [true, 'street is required'],
+    required: [true, 'email is required'],
     unique: true,
   },
   isActive: {
     type: Boolean,
-    required: [true, 'street is required'],
+    required: true,
   },
   hobbies: [{ type: String, required: 'hobbies is required' }],
   address: addressSchema,
   orders: { type: [orderSchema], required: true },
-  isDeleted: { type: 'boolean', default: false },
+  isDeleted: { type: 'Boolean', default: false },
 });
 
 //middleware
@@ -100,8 +100,7 @@ userSchema.pre('save', async function (next) {
   )) as string;
 
   next();
-}
-);
+});
 //post hook
 userSchema.post('save', function (doc, next) {
   doc.password = undefined;
@@ -120,12 +119,19 @@ userSchema.post('aggregate', function (docs, next) {
 //find
 userSchema.post('find', function (docs, next) {
   if (Array.isArray(docs)) {
-    // Iterate through the found documents and set password to undefined
     docs.forEach((doc) => {
       if (doc) {
         doc.password = undefined;
       }
     });
+  }
+
+  next();
+});
+//update
+userSchema.post('updateOne', function (result, next) {
+  if ('$set' in result.update && 'password' in result.update.$set) {
+    result.update.$set.password = undefined;
   }
 
   next();

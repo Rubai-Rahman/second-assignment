@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import { UserService } from './user.service';
-import { userValidationSchema } from './user.validation';
+import {
+  ordersValidationSchema,
+  userValidationSchema,
+} from './user.validation';
 
 //create User
 const createUser = async (req: Request, res: Response) => {
@@ -40,8 +43,8 @@ const getAllUser = async (req: Request, res: Response) => {
 };
 //Get User by id
 const getSingleUser = async (req: Request, res: Response) => {
-  const userId = parseInt(req.params.userId, 10);
   try {
+    const userId = parseInt(req.params.userId, 10);
     const result = await UserService.getSingleUserFromDB(userId);
     res.status(200).json({
       success: true,
@@ -58,11 +61,12 @@ const getSingleUser = async (req: Request, res: Response) => {
 };
 //update User by id
 const updateSingleUser = async (req: Request, res: Response) => {
-  const userId = parseInt(req.params.userId, 10);
-  const updatedData = req.body.user;
-
   try {
-    const result = await UserService.updateSingleUserInDB(userId, updatedData);
+    const userId = parseInt(req.params.userId, 10);
+    const updatedData = req.body.user;
+    const zodparseData = userValidationSchema.parse(updatedData);
+
+    const result = await UserService.updateSingleUserInDB(userId, zodparseData);
     res.status(200).json({
       success: true,
       message: 'User updated successfully!',
@@ -95,7 +99,7 @@ const deleteSingleUser = async (req: Request, res: Response) => {
     });
   }
 };
-//getAlldataforSingleuser
+//get Single User Orders
 const getSingleUserOrders = async (req: Request, res: Response) => {
   const userId = parseInt(req.params.userId, 10);
   try {
@@ -113,16 +117,15 @@ const getSingleUserOrders = async (req: Request, res: Response) => {
     });
   }
 };
-//getSingleUserOrders
+//setSingleUserOrders
 const setSingleUserOrders = async (req: Request, res: Response) => {
-  const userId = parseInt(req.params.userId, 10);
-
-  const productData = req.body;
-
   try {
+    const userId = parseInt(req.params.userId, 10);
+    const productData = req.body;
+    const zodparseData = ordersValidationSchema.parse(productData);
     const result = await UserService.setSingleUserOrdersFromDb(
       userId,
-      productData,
+      zodparseData,
     );
     res.status(200).json({
       success: true,
@@ -150,9 +153,10 @@ const calculateTotalPriceForUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
+    res.status(400).json({
       success: false,
-      message: err.message || 'Something went wrong',
+      code: 400,
+      message: err.message || 'User not found!',
       error: err,
     });
   }

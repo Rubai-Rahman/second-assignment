@@ -53,7 +53,7 @@ const updateSingleUserInDB = async (userId: number, updatedData: TUser) => {
       $project: {
         _id: 0,
         userId: 1,
-        usernam: 1,
+        username: 1,
         age: 1,
         email: 1,
         isActive: 1,
@@ -76,9 +76,9 @@ const deleteSingleUserInDB = async (userId: number) => {
   if (!(await user.isUserExists(userId))) {
     throw new Error('User Does not exists');
   }
-  const result = await User.updateOne({ userId }, { isDeleted: true });
+  await User.updateOne({ userId }, { isDeleted: true });
 
-  return result;
+  return null;
 };
 //get Single user Orders
 const getSingleUserOrdersFromDb = async (userId: number) => {
@@ -86,8 +86,17 @@ const getSingleUserOrdersFromDb = async (userId: number) => {
   if (!(await user.isUserExists(userId))) {
     throw new Error('User Does not exists');
   }
-  const result = await User.find({ userId });
-
+  const result = await User.aggregate([
+    {
+      $match: { userId: userId },
+    },
+    {
+      $project: {
+        _id: 0,
+        orders: 1,
+      },
+    },
+  ]);
   return result;
 };
 //set Single user Orders
@@ -99,7 +108,7 @@ const setSingleUserOrdersFromDb = async (
   if (!(await user.isUserExists(userId))) {
     throw new Error('User Does not exists');
   }
-  const result = await User.findOneAndUpdate(
+  await User.findOneAndUpdate(
     { userId },
     {
       $push: {
@@ -110,10 +119,9 @@ const setSingleUserOrdersFromDb = async (
         },
       },
     },
-    { upsert: true, new: true },
+    { upsert: true, new: false },
   );
-
-  return result;
+  return null;
 };
 //calculateTotalPrice
 const calculateTotalPriceForUser = async (userId: number) => {
@@ -123,21 +131,16 @@ const calculateTotalPriceForUser = async (userId: number) => {
   }
   const result = await User.aggregate([
     { $match: { userId } },
+    { $unwind: '$orders' },
     {
-      $project: {
-        _id: 0,
-        userId: 1,
+      $group: {
+        _id: '$userId',
         totalPrice: {
-          $sum: {
-            $map: {
-              input: '$orders',
-              as: 'order',
-              in: { $multiply: ['$$order.price', '$$order.quantity'] },
-            },
-          },
+          $sum: { $multiply: ['$orders.price', '$orders.quantity'] },
         },
       },
     },
+    { $project: { _id: 0, userId: '$_id', totalPrice: 1 } },
   ]);
 
   return result;
