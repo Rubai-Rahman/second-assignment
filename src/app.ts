@@ -10,6 +10,6 @@ app.use(cors());
 app.use('/api/users', UserRoutes);
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Lest complete the back end');
+  res.send('Welcome to Api of Second Project');
 });
 export default app;
