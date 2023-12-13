@@ -88,7 +88,7 @@ const deleteSingleUserInDB = async (userId: number) => {
   if (!(await user.isUserExists(userId))) {
     throw new Error('User Does not exists');
   }
-  await User.updateOne({ userId }, { isDeleted: true });
+  await User.findOneAndUpdate({ userId }, { $set: { isDeleted: true } });
 
   return null;
 };
@@ -148,7 +148,9 @@ const calculateTotalPriceForUser = async (userId: number) => {
       $group: {
         _id: '$userId',
         totalPrice: {
-          $sum: { $multiply: ['$orders.price', '$orders.quantity'] },
+          $sum: {
+            $multiply: [{ $toDouble: '$orders.price' }, '$orders.quantity'],
+          },
         },
       },
     },

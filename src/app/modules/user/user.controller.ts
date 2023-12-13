@@ -8,7 +8,7 @@ import {
 //create User
 const createUser = async (req: Request, res: Response) => {
   try {
-    const { user } = req.body;
+    const user = req.body;
     const zodparseData = userValidationSchema.parse(user);
     const result = await UserService.createUserIntoDB(zodparseData);
     res.status(200).json({
