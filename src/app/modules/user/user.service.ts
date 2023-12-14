@@ -25,7 +25,6 @@ const createUserIntoDB = async (userData: TUser) => {
   return {
     userId: result.userId,
     username: result.username,
-
     fullName: user.fullName,
     age: result.age,
     email: result.email,
@@ -87,6 +86,7 @@ const updateSingleUserInDB = async (userId: number, updatedData: TUser) => {
         _id: 0,
         userId: 1,
         username: 1,
+        fullName: 1,
         age: 1,
         email: 1,
         isActive: 1,

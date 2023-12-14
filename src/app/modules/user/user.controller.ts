@@ -52,10 +52,13 @@ const getSingleUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
-      success: true,
-      message: err.message || 'Somthing went wrong',
-      error: err,
+    res.status(404).json({
+      success: false,
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: 'User not found!',
+      },
     });
   }
 };
@@ -63,7 +66,7 @@ const getSingleUser = async (req: Request, res: Response) => {
 const updateSingleUser = async (req: Request, res: Response) => {
   try {
     const userId = parseInt(req.params.userId, 10);
-    const updatedData = req.body.user;
+    const updatedData = req.body;
     const zodparseData = userValidationSchema.parse(updatedData);
 
     const result = await UserService.updateSingleUserInDB(userId, zodparseData);
@@ -73,10 +76,13 @@ const updateSingleUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
-      success: true,
-      message: err.message || 'Somthing went wrong',
-      error: err,
+    res.status(404).json({
+      success: false,
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: 'User not found!',
+      },
     });
   }
 };
@@ -92,10 +98,13 @@ const deleteSingleUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
-      success: true,
-      message: err.message || 'Somthing went wrong',
-      error: err,
+    res.status(404).json({
+      success: false,
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: 'User not found!',
+      },
     });
   }
 };
@@ -110,10 +119,13 @@ const getSingleUserOrders = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
-      success: true,
-      message: err.message || 'Somthing went wrong',
-      error: err,
+    res.status(404).json({
+      success: false,
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: 'User not found!',
+      },
     });
   }
 };
@@ -133,10 +145,13 @@ const setSingleUserOrders = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
-      success: true,
-      message: err.message || 'Somthing went wrong',
-      error: err,
+    res.status(404).json({
+      success: false,
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: 'User not found!',
+      },
     });
   }
 };
@@ -155,9 +170,11 @@ const calculateTotalPriceForUser = async (req: Request, res: Response) => {
   } catch (err: any) {
     res.status(404).json({
       success: false,
-      code: 404,
-      message: err.message || 'User not found!',
-      error: err,
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: 'User not found!',
+      },
     });
   }
 };
