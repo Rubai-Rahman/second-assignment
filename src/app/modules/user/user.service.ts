@@ -22,7 +22,17 @@ const createUserIntoDB = async (userData: TUser) => {
     }
   }
   const result = await user.save();
-  return result;
+  return {
+    userId: result.userId,
+    username: result.username,
+
+    fullName: user.fullName,
+    age: result.age,
+    email: result.email,
+    isActive: result.isActive,
+    hobbies: result.hobbies,
+    address: result.address,
+  };
 };
 //Get all user service
 const getAllUserFromDB = async () => {
@@ -34,14 +44,25 @@ const getAllUserFromDB = async () => {
 
 //Get single user
 const getSingleUserFromDB = async (userId: number) => {
-  //const user = new User();
-  // if (!(await user.isUserExists(userId))) {
-  //   throw new Error('User Does not exists');
-  // }
+  const user = new User();
+  if (!(await user.isUserExists(userId))) {
+    throw new Error('User Does not exists');
+  }
   const result = await User.aggregate([
     {
-      $match: {
-        userId: userId,
+      $match: { userId: userId },
+    },
+    {
+      $project: {
+        _id: 0,
+        userId: 1,
+        username: 1,
+        fullName: 1,
+        age: 1,
+        email: 1,
+        isActive: 1,
+        hobbies: 1,
+        address: 1,
       },
     },
   ]);
