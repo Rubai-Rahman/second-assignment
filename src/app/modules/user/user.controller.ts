@@ -129,7 +129,7 @@ const setSingleUserOrders = async (req: Request, res: Response) => {
     );
     res.status(200).json({
       success: true,
-      message: 'Orders fetched successfully!',
+      message: 'Order created successfully!',
       data: result,
     });
   } catch (err: any) {
@@ -153,9 +153,9 @@ const calculateTotalPriceForUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(400).json({
+    res.status(404).json({
       success: false,
-      code: 400,
+      code: 404,
       message: err.message || 'User not found!',
       error: err,
     });
