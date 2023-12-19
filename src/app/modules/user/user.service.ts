@@ -109,7 +109,7 @@ const deleteSingleUserInDB = async (userId: number) => {
   if (!(await user.isUserExists(userId))) {
     throw new Error('User Does not exists');
   }
-  await User.findOneAndUpdate({ userId }, { $set: { isDeleted: true } });
+  await User.deleteOne({ userId: userId });
 
   return null;
 };

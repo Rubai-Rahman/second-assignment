@@ -26,7 +26,6 @@ export type TUser = {
   hobbies: string[];
   address: TAddress;
   orders?: TOrders[];
-  isDeleted: boolean;
 };
 
 //custom instance

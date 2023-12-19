@@ -85,7 +85,6 @@ const userSchema = new Schema<TUser, UserModel, UserMethods>({
   hobbies: [{ type: String, required: 'hobbies is required' }],
   address: addressSchema,
   orders: { type: [orderSchema], required: true },
-  isDeleted: { type: 'Boolean', default: false },
 });
 
 //middleware
@@ -136,19 +135,7 @@ userSchema.post('updateOne', function (result, next) {
 
   next();
 });
-//pree hook
-userSchema.pre('find', function (next) {
-  this.find({ isDeleted: { $ne: true } });
-  next();
-});
-userSchema.pre('findOne', function (next) {
-  this.find({ isDeleted: { $ne: true } });
-  next();
-});
-userSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
-  next();
-});
+
 //custom instance for UserId
 userSchema.methods.isUserExists = async function (userId) {
   const existingUser = await User.findOne({ userId });
